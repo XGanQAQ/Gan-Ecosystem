@@ -9,10 +9,15 @@ public static class GameEntry
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void BeforeSceneLoad()
     {
+        var cursorController = new UnityCursorController(
+            new HashSet<UILayer> { UILayer.Normal, UILayer.Popup },
+            true
+        );
         _uiManager = new UnityUIManager(
             new UnitySimpleUIResLoader(),
             new UnitySimpleUIEventBus(),
-            new HashSet<UILayer>() { UILayer.Popup, UILayer.Top }
-            );
+            cursorController
+        );
+        cursorController.SetUIManager(_uiManager);
     }
 }
