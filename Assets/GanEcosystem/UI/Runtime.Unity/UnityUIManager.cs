@@ -26,15 +26,13 @@ namespace GanEcosystem.UI.UnityRuntime
         private readonly Dictionary<UILayer, GameObject> _layerRoots = new();
         private GameObject _uiRoot;
 
-        public UnityUIManager(IUIResLoader uiResLoader, IUIEventBus uiEventBus, HashSet<UILayer> unLockedCursorLayers, bool isNeedAutoLockCursor = true) : base(uiResLoader, uiEventBus)
+        public UnityUIManager(IUIResLoader uiResLoader, IUIEventBus uiEventBus, ICursorController cursorController)
+            : base(uiResLoader, uiEventBus, cursorController)
         {
             Instance = this;
             CreateUIRoot();
             CreateLayerCanvases();
             EnsureEventSystem();
-
-            SetCursorController(new UnityCursorController(this, unLockedCursorLayers, isNeedAutoLockCursor));
-            _cursorController.UpdateCursorState();
         }
 
         protected override IViewer CreateViewer(string viewerName, string assetKey, UILayer layer)

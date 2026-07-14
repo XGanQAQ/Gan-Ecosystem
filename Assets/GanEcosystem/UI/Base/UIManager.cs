@@ -14,10 +14,11 @@ namespace GanEcosystem.UI.Core
         protected IUIResLoader _uiResLoader;
         protected IUIEventBus _uiEventBus;
 
-        protected UIManager(IUIResLoader uiResLoader, IUIEventBus uiEventBus)
+        protected UIManager(IUIResLoader uiResLoader, IUIEventBus uiEventBus, ICursorController uiCursorController)
         {
             _uiResLoader = uiResLoader;
             _uiEventBus = uiEventBus;
+            _cursorController = uiCursorController;
             InitializeLayerViewers();
         }
 
@@ -86,16 +87,6 @@ namespace GanEcosystem.UI.Core
                 return Array.Empty<KeyValuePair<string, IViewer>>();
 
             return viewers;
-        }
-
-        protected bool TryGetLayerViewers(UILayer layer, out Dictionary<string, IViewer> viewers)
-        {
-            return _layerViewers.TryGetValue(layer, out viewers);
-        }
-
-        protected void SetCursorController(ICursorController cursorController)
-        {
-            _cursorController = cursorController;
         }
 
         protected abstract IViewer CreateViewer(string viewerName, string assetKey, UILayer layer);
