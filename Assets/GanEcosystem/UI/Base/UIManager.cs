@@ -8,6 +8,7 @@ namespace GanEcosystem.UI.Core
     {
         private readonly Dictionary<UILayer, Dictionary<string, IViewer>> _layerViewers = new();
         private static readonly Dictionary<string, Type> _viewerTypeCache = new();
+        private static readonly Dictionary<string, ViewerAttribute> _viewerAttributeCache = new();
 
         protected ICursorController _cursorController;
         protected IUIResLoader _uiResLoader;
@@ -29,19 +30,24 @@ namespace GanEcosystem.UI.Core
         public IViewer OpenUI(string viewerName, object data = null)
         {
             IViewer viewer = GetViewer(viewerName);
+            var attr = GetViewerAttribute(viewerName);
             if (viewer != null)
             {
+                if (attr?.IsMutuallyExclusive == true)
+                    CloseOtherLayerViewers(viewer.Layer, viewerName);
+
                 viewer.Open(data);
                 _cursorController?.UpdateCursorState();
                 return viewer;
             }
 
-            Type type = ResolveViewerType(viewerName);
-            var attr = type?.GetCustomAttribute<ViewerAttribute>();
             string assetKey = attr != null && !string.IsNullOrEmpty(attr.AssetKey)
                 ? attr.AssetKey
                 : "UI/" + viewerName;
             UILayer layer = attr?.Layer ?? UILayer.Normal;
+
+            if (attr?.IsMutuallyExclusive == true)
+                CloseOtherLayerViewers(layer, viewerName);
 
             viewer = CreateViewer(viewerName, assetKey, layer);
             if (viewer == null)
@@ -133,6 +139,37 @@ namespace GanEcosystem.UI.Core
 
             _viewerTypeCache[uiName] = null;
             return null;
+        }
+
+        private static ViewerAttribute GetViewerAttribute(string viewerName)
+        {
+            if (_viewerAttributeCache.TryGetValue(viewerName, out var cached))
+                return cached;
+
+            var type = ResolveViewerType(viewerName);
+            var attr = type?.GetCustomAttribute<ViewerAttribute>();
+            _viewerAttributeCache[viewerName] = attr;
+            return attr;
+        }
+
+        private void CloseOtherLayerViewers(UILayer layer, string viewerName)
+        {
+            if (!_layerViewers.TryGetValue(layer, out var viewers) || viewers == null)
+                return;
+
+            var targetNames = new List<string>();
+            foreach (var pair in viewers)
+            {
+                if (pair.Key == viewerName || pair.Value == null || !pair.Value.IsActive)
+                    continue;
+
+                targetNames.Add(pair.Key);
+            }
+
+            foreach (var targetName in targetNames)
+            {
+                CloseUI(targetName);
+            }
         }
     }
 }
