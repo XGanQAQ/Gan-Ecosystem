@@ -12,7 +12,7 @@ namespace GanEcosystem.UI.Core
         event Action OnOpen;
         event Action OnClose;
 
-        void Open();
+        void Open(object data = null);
         void Close();
     }
 }

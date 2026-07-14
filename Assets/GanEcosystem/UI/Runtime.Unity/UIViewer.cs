@@ -16,7 +16,7 @@ namespace GanEcosystem.UI.UnityRuntime
         public event Action OnOpen;
         public event Action OnClose;
 
-        public virtual void Open()
+        public virtual void Open(object data = null)
         {
             gameObject.SetActive(true);
             OnOpen?.Invoke();

@@ -26,12 +26,12 @@ namespace GanEcosystem.UI.Core
             return viewer != null && viewer.IsActive;
         }
 
-        public IViewer OpenUI(string viewerName)
+        public IViewer OpenUI(string viewerName, object data = null)
         {
             IViewer viewer = GetViewer(viewerName);
             if (viewer != null)
             {
-                viewer.Open();
+                viewer.Open(data);
                 _cursorController?.UpdateCursorState();
                 return viewer;
             }
@@ -55,7 +55,7 @@ namespace GanEcosystem.UI.Core
 
             viewers.TryAdd(viewerName, viewer);
 
-            viewer.Open();
+            viewer.Open(data);
             _uiEventBus.Publish(new OpenUIEvent(viewer));
 
             _cursorController?.UpdateCursorState();
