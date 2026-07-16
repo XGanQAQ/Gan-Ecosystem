@@ -9,7 +9,7 @@ namespace GanEcosystem.UI.UnityRuntime
         public HashSet<UILayer> UnLockedCursorLayers;
 
         public bool IsNeedAutoLockCursor = true;
-        private IUIManager _uiManager;
+        private UIManager _uiManager;
 
         public UnityCursorController(HashSet<UILayer> unLockedCursorLayers, bool isNeedAutoLockCursor = true)
         {
@@ -17,7 +17,7 @@ namespace GanEcosystem.UI.UnityRuntime
             IsNeedAutoLockCursor = isNeedAutoLockCursor;
         }
 
-        public void SetUIManager(IUIManager uiManager)
+        public void SetUIManager(UIManager uiManager)
         {
             _uiManager = uiManager;
         }

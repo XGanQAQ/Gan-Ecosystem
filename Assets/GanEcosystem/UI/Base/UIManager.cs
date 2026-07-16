@@ -104,27 +104,6 @@ namespace GanEcosystem.UI.Core
             return null;
         }
 
-        private static Type ResolveViewerType(string uiName)
-        {
-            if (_viewerTypeCache.TryGetValue(uiName, out var cached))
-                return cached;
-
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
-            {
-                foreach (var type in assembly.GetTypes())
-                {
-                    if (type.Name == uiName && typeof(IViewer).IsAssignableFrom(type) && !type.IsAbstract)
-                    {
-                        _viewerTypeCache[uiName] = type;
-                        return type;
-                    }
-                }
-            }
-
-            _viewerTypeCache[uiName] = null;
-            return null;
-        }
-
         private void CloseOtherLayerViewers(UILayer layer, string viewerName)
         {
             if (!_layerViewers.TryGetValue(layer, out var viewers) || viewers == null)
