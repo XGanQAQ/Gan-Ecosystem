@@ -8,10 +8,11 @@ namespace GanEcosystem.UI.UnityRuntime
     {
         [SerializeField] private string viewerName;
         public virtual string UIName => string.IsNullOrEmpty(viewerName) ? GetType().Name : viewerName;
-        public UILayer Layer { get; set; } = UILayer.Normal;
-
+        public virtual UILayer Layer { get; set; } = UILayer.Normal;
+        public virtual string AssetKey => $"UI/{UIName}";
+        public virtual bool IsMutuallyExclusive => true;
+        public virtual bool CloseableByEscape { get; set; } = true;
         public bool IsActive => gameObject.activeSelf;
-        public bool CloseableByEscape { get; set; } = true;
 
         public event Action OnOpen;
         public event Action OnClose;
